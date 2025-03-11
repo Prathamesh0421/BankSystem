@@ -11,6 +11,7 @@ namespace CentralApi.Controllers
     using Models;
     using Services.Bank;
     using Services.Models.Banks;
+    using Microsoft.Extensions.Logging;
 
     public class PaymentsController : Controller
     {
@@ -22,14 +23,17 @@ namespace CentralApi.Controllers
         private readonly IMapper mapper;
         private readonly CentralApiConfiguration configuration;
 
+        private readonly ILogger<PaymentsController> _logger;
+
         public PaymentsController(
             IBanksService banksService,
             IMapper mapper,
-            IOptions<CentralApiConfiguration> configuration)
+            IOptions<CentralApiConfiguration> configuration, ILogger<PaymentsController> logger)
         {
             this.banksService = banksService;
             this.mapper = mapper;
             this.configuration = configuration.Value;
+            _logger = logger;
         }
 
 
@@ -57,6 +61,8 @@ namespace CentralApi.Controllers
                     IsEssential = true,
                     MaxAge = TimeSpan.FromMinutes(CookieValidityInMinutes)
                 });
+
+            _logger.LogInformation("Service executed successfully!");
 
             return this.RedirectToAction("Process");
         }
@@ -93,6 +99,8 @@ namespace CentralApi.Controllers
                     Description = paymentInfo.Description,
                     Banks = banks
                 };
+
+                _logger.LogInformation("Service executed successfully!");
 
                 return this.View(viewModel);
             }
@@ -140,6 +148,8 @@ namespace CentralApi.Controllers
                     PaymentDataFormKey = PaymentDataFormKey,
                     PaymentData = proofRequest
                 };
+
+                _logger.LogInformation("Service executed successfully!");
 
                 return this.View("PaymentPostRedirect", paymentPostRedirectModel);
             }

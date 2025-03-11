@@ -9,15 +9,19 @@
     using Data;
     using Microsoft.EntityFrameworkCore;
     using Models.Card;
+    using Microsoft.Extensions.Logging;
 
     public class CardService : BaseService, ICardService
     {
         private readonly ICardHelper cardHelper;
         private readonly IMapper mapper;
 
-        public CardService(BankSystemDbContext context, ICardHelper cardHelper, IMapper mapper)
+        private readonly ILogger<CardService> _logger;
+
+        public CardService(BankSystemDbContext context, ICardHelper cardHelper, IMapper mapper, ILogger<CardService> logger)
             : base(context)
         {
+            _logger = logger;
             this.cardHelper = cardHelper;
             this.mapper = mapper;
         }
@@ -45,6 +49,8 @@
 
             await this.Context.Cards.AddAsync(dbModel);
             await this.Context.SaveChangesAsync();
+
+            _logger.LogInformation("Card Created successfully!");
 
             return true;
         }
@@ -110,6 +116,8 @@
 
             this.Context.Cards.Remove(card);
             await this.Context.SaveChangesAsync();
+
+            _logger.LogInformation("Card deleted successfully!");
 
             return true;
         }

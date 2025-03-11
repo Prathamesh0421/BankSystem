@@ -12,6 +12,7 @@
     using Newtonsoft.Json;
     using Services.Bank;
     using Services.Models.Banks;
+    using Microsoft.Extensions.Logging;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -27,10 +28,13 @@
         private readonly IMapper mapper;
         private readonly CentralApiConfiguration configuration;
 
+        private readonly ILogger<ReceiveTransactionsController> _logger;
+
         public ReceiveTransactionsController(
             IBanksService banksService,
             IMapper mapper,
-            IOptions<CentralApiConfiguration> configuration)
+            IOptions<CentralApiConfiguration> configuration,
+            ILogger<ReceiveTransactionsController> logger)
         {
             this.banksService = banksService;
             this.mapper = mapper;
@@ -56,6 +60,9 @@
                 TransactionHelper.SignAndEncryptData(sendModel, this.configuration.Key, bank.ApiKey);
             var client = new HttpClient();
             var response = await client.PostAsJsonAsync(bank.ApiAddress, encryptedAndSignedData);
+
+            _logger.LogInformation("Service executed successfully!");
+
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 return this.BadRequest(string.Format(BankRefusedTheRequestMessage, model.DestinationBankName));

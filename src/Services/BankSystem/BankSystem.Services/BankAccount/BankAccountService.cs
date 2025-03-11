@@ -9,15 +9,19 @@
     using Data;
     using Microsoft.EntityFrameworkCore;
     using Models.BankAccount;
+    using Microsoft.Extensions.Logging;
 
     public class BankAccountService : BaseService, IBankAccountService
     {
         private readonly IBankAccountUniqueIdHelper uniqueIdHelper;
         private readonly IMapper mapper;
-        
-        public BankAccountService(BankSystemDbContext context, IBankAccountUniqueIdHelper uniqueIdHelper, IMapper mapper)
+
+        private readonly ILogger<BankAccountService> _logger;
+
+        public BankAccountService(BankSystemDbContext context, IBankAccountUniqueIdHelper uniqueIdHelper, IMapper mapper, ILogger<BankAccountService> logger)
             : base(context)
         {
+            _logger = logger;
             this.uniqueIdHelper = uniqueIdHelper;
             this.mapper = mapper;
         }
@@ -44,6 +48,8 @@
 
             await this.Context.Accounts.AddAsync(dbModel);
             await this.Context.SaveChangesAsync();
+
+            _logger.LogInformation("Bank account Created successfully!");
 
             return dbModel.Id;
         }
@@ -79,6 +85,8 @@
             account.Name = newName;
             this.Context.Update(account);
             await this.Context.SaveChangesAsync();
+
+            _logger.LogInformation("Bank account name changed successfully!");
 
             return true;
         }

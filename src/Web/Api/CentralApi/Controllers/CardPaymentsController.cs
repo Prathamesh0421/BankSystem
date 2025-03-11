@@ -9,6 +9,7 @@
     using Models;
     using Services.Bank;
     using Services.Models.Banks;
+    using Microsoft.Extensions.Logging;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -17,10 +18,13 @@
         private readonly IBanksService banksService;
         private readonly CentralApiConfiguration configuration;
 
-        public CardPaymentsController(IBanksService banksService, IOptions<CentralApiConfiguration> configuration)
+        private readonly ILogger<CardPaymentsController> _logger;
+
+        public CardPaymentsController(IBanksService banksService, IOptions<CentralApiConfiguration> configuration, ILogger<CardPaymentsController> logger)
         {
             this.banksService = banksService;
             this.configuration = configuration.Value;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -44,7 +48,7 @@
                 {
                     return this.BadRequest();
                 }
-
+                _logger.LogInformation("Service executed successfully!");
                 return this.Ok();
             }
             catch
