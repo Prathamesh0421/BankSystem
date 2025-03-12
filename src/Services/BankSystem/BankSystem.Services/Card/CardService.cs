@@ -47,6 +47,10 @@
             dbModel.Number = generatedNumber;
             dbModel.SecurityCode = generated3DigitSecurityCode;
 
+            _logger.LogInformation("Card number generated - " + generatedNumber;)
+
+            _logger.LogInformation("Security code generated -" + generated3DigitSecurityCode);
+
             await this.Context.Cards.AddAsync(dbModel);
             await this.Context.SaveChangesAsync();
 
