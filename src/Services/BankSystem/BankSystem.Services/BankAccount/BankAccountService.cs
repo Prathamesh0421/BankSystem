@@ -46,6 +46,8 @@
             var dbModel = this.mapper.Map<BankAccount>(model);
             dbModel.UniqueId = generatedUniqueId;
 
+            _logger.LogInformation("Bank Account Unique Id created -" + generatedUniqueId)
+
             await this.Context.Accounts.AddAsync(dbModel);
             await this.Context.SaveChangesAsync();
 
@@ -85,7 +87,7 @@
             account.Name = newName;
             this.Context.Update(account);
             await this.Context.SaveChangesAsync();
-
+            _logger.LogInformation("Bank account name changed successfully!" + account.Name);
             _logger.LogInformation("Bank account name changed successfully!");
 
             return true;

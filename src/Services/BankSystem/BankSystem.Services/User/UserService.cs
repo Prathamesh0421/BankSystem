@@ -18,6 +18,8 @@
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.UserName == username);
 
+            _logger.LogInformation("User ID retrieved - " + user?.Id);
+
             return user?.Id;
         }
 
@@ -27,6 +29,8 @@
                 .Users
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == userId);
+
+            _logger.LogInformation("User name retrieved - " + user?.FullName)
 
             return user?.FullName;
         }
